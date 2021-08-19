@@ -1,0 +1,1 @@
+export const Panel = ({ className, children }) => <div className={"panel " + (className || "")}> {children} </div>
