@@ -4,18 +4,32 @@ import { Panel } from './ui/Interface';
 const Create = () => {
   const [dates, setDates] = useState([new Date()]);
 
+  const isValidDate = (id, value) => {
+    const _id = parseInt(id);
+    const userDate = new Date(value.split("-"));
+    const isGreater = dates[_id - 1] ? dates[_id - 1] < userDate : true;
+    const isLess = dates[_id + 1] ? userDate < dates[_id + 1] : true;
+    return isGreater && isLess ? userDate : false;
+  }
+
   const handleDateChange = (event) => {
     const { id, value } = event.target;
 
     setDates((prev) => {
       let changes = [...prev];
-      changes[id] = new Date(value);
+      const validated = isValidDate(id, value);
+      if(validated) {
+        changes[id] = validated;
+      }
       return changes;
     });
   }
 
   const handleAddDate = () => {
-    setDates((prev) => [...prev, new Date(dates[dates.length-1].valueOf())]);
+    const nextDate = new Date()
+    nextDate.setDate(dates[dates.length-1].getDate() + 1);
+    nextDate.setHours(0, 0, 0, 0);
+    setDates((prev) => [...prev, nextDate]);
   }
 
   return (
