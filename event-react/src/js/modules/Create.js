@@ -1,8 +1,15 @@
 import { useState } from 'react';
+import { Navigate } from 'react-router';
 import { Panel } from './ui/Interface';
 
-const Create = () => {
+const Create = ({ setEvent }) => {
+  const [redirect, setRedirect] = useState(null);
+  const [eventName, setEventName] = useState("");
   const [dates, setDates] = useState([new Date()]);
+
+  const handleEventName = (event) => {
+    setEventName(event.target.value);
+  }
 
   const isValidDate = (id, value) => {
     const _id = parseInt(id);
@@ -32,13 +39,19 @@ const Create = () => {
     setDates((prev) => [...prev, nextDate]);
   }
 
+  const handleCreate = () => {
+    setEvent({ name: eventName, dates });
+    setRedirect(<Navigate to="/test"/>);
+  }
+
+  if(redirect) return redirect;
   return (
-    <Panel className="create flex-col">
+    <Panel className="create center-self flex-col">
       {/* <label className="subtitle medium bold"> Create an Event </label> */}
 
       <div className="flex-col">
         <label className="medium"> Event Name </label>
-        <input type="text"/>
+        <input type="text" value={eventName} onChange={handleEventName}/>
       </div>
 
       <div className="flex-col">
@@ -47,7 +60,7 @@ const Create = () => {
         <button onClick={handleAddDate}> + Add Another Date </button>
       </div>
 
-      <button> Create Event </button>
+      <button onClick={handleCreate}> Create Event </button>
     </Panel>
   )
 }
