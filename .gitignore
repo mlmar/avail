@@ -1,2 +1,5 @@
 event-react/node_modules
 event-react/.env
+
+event-express/node_modules
+event-express/.env

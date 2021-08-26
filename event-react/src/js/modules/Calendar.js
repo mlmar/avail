@@ -23,7 +23,10 @@ const Column = ({ date, time}) => {
 
   return (
     <div className="column flex-col"> 
-      { rows() }
+      {date ? <label className="date flex"> {`${date.getUTCMonth() + 1}/${date.getUTCDate()}`} </label> : <span className="flex"></span>}
+      <div className="rows flex-col">
+        { rows() }
+      </div>
     </div>
   )
 }

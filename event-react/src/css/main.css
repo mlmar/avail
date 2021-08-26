@@ -88,9 +88,9 @@ input[type=text], input[type=date] {
 .flex-col { flex-direction: column }
 .flex-fill { flex: 1 1 }
 
-.center-self { 
-  margin: auto; 
-}
+.center-self { margin: auto }
+
+.center-text { text-align: center }
 
 /*** INTERACE ***/
 
@@ -110,14 +110,19 @@ input[type=text], input[type=date] {
 
 /*** CALENDAR ***/
 
+
 .calendar > *:not(:last-child) { margin-bottom: var(--small-margin) }
 
 
 .calendar .column:not(:last-child) {
-  margin-right: 1rem;
+  margin-right: .5rem;
 }
 
-.column:not(:first-child) {
+.column {
+  user-select: none;
+}
+
+.column:not(:first-child) .rows {
   box-shadow: var(--border-sides);
 }
 
@@ -126,10 +131,15 @@ input[type=text], input[type=date] {
 }
 
 .column:not(:first-child) span {
-  width: 4rem;
+  width: 3.5rem;
 }
 
 
 .column:not(:first-child) span {
   box-shadow: var(--border-bottom);
+  cursor: pointer;
+}
+
+.column .date {
+  justify-content: center;
 }

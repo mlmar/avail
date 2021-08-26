@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Navigate } from 'react-router';
 import { Panel } from './ui/Interface';
 
+import { createEvent } from '../service/EventService.js';
+
 const Create = ({ setEvent }) => {
   const [redirect, setRedirect] = useState(null);
   const [eventName, setEventName] = useState("");
@@ -39,9 +41,13 @@ const Create = ({ setEvent }) => {
     setDates((prev) => [...prev, nextDate]);
   }
 
-  const handleCreate = () => {
-    setEvent({ name: eventName, dates });
-    setRedirect(<Navigate to="/test"/>);
+  const handleCreate = async () => {
+    const event = { name: eventName, dates };
+    setEvent();
+    // setRedirect(<Navigate to="/test"/>);
+
+    const response = await createEvent(event);
+    console.log(response);
   }
 
   if(redirect) return redirect;
