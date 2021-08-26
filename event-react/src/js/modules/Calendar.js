@@ -1,18 +1,41 @@
-import { Panel } from "./ui/Interface"
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
+import { Panel } from './ui/Interface';
+import { findEvent } from '../service/EventsService.js';
 
-const Calendar = ({ name, dates }) => {
+const Calendar = () => {
+  const [event, setEvent] = useState(null);
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetch = async () => {
+      const response = await findEvent(id)
+      setEvent(response?.data);
+    };
+
+    fetch();
+
+  }, [id])
+
+  if(!event) {
+    return (
+      <Panel className="calendar center-self flex-col">
+        <label className="large"> Event does not exist! </label>
+      </Panel>
+    )
+  }
   return (
     <Panel className="calendar center-self flex-col">
-      <label className="medium"> {name} </label>
+      <label className="medium"> {event?.name} </label>
       <div className="flex">
         <Column time/>
-        { dates?.map((d, i ) => <Column date={d} key={i}/> )}
+        { event?.dates?.map((d, i ) => <Column date={new Date(d)} key={i}/> )}
       </div>
     </Panel>
   )
 }
 
-const Column = ({ date, time}) => {
+const Column = ({ date, time }) => {
   const rows = () => {
     let r = [];
     for(var i = 0; i < 24; i++) {

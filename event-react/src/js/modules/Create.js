@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { Navigate } from 'react-router';
 import { Panel } from './ui/Interface';
 
-import { createEvent } from '../service/EventService.js';
+import { createEvent } from '../service/EventsService.js';
 
-const Create = ({ setEvent }) => {
+const DEFAULT_DATE = new Date();
+DEFAULT_DATE.setHours(0, 0, 0, 0);
+
+const Create = () => {
   const [redirect, setRedirect] = useState(null);
   const [eventName, setEventName] = useState("");
-  const [dates, setDates] = useState([new Date()]);
+  const [dates, setDates] = useState([DEFAULT_DATE]);
 
   const handleEventName = (event) => {
     setEventName(event.target.value);
@@ -42,12 +45,9 @@ const Create = ({ setEvent }) => {
   }
 
   const handleCreate = async () => {
-    const event = { name: eventName, dates };
-    setEvent();
-    // setRedirect(<Navigate to="/test"/>);
-
+    const event = { name: eventName.trim(), dates };
     const response = await createEvent(event);
-    console.log(response);
+    setRedirect(<Navigate to={`/${response?.data?.id}`}/>);
   }
 
   if(redirect) return redirect;
@@ -57,16 +57,16 @@ const Create = ({ setEvent }) => {
 
       <div className="flex-col">
         <label className="medium"> Event Name </label>
-        <input type="text" value={eventName} onChange={handleEventName}/>
+        <input type="text" value={eventName} onChange={handleEventName} pattern="([A-z0-9À-ž\s]){2,}"/>
       </div>
 
       <div className="flex-col">
         <label className="medium"> Event Date </label>
-        { dates.map((date, i) => <input type="date" value={date.toLocaleDateString('en-CA')} id={i} onChange={handleDateChange} key={i}/> )}
+        { dates.map((date, i) => <input type="date" value={date.toLocaleDateString('en-CA')} onChange={handleDateChange} id={i} key={i}/> )}
         <button onClick={handleAddDate}> + Add Another Date </button>
       </div>
 
-      <button onClick={handleCreate}> Create Event </button>
+      <button onClick={handleCreate} disabled={eventName.trim().length === 0}> Create Event </button>
     </Panel>
   )
 }

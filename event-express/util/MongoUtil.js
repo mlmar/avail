@@ -18,4 +18,7 @@ const close = () => CLIENT.close();
 const objectID = ObjectId;
 const collection = (id) => get()?.collection(id);
 
-module.exports = { connect, get, close, objectID, collection }
+
+let COLLECTIONS = {}
+
+module.exports = { connect, get, close, objectID, collection, COLLECTIONS }
