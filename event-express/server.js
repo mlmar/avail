@@ -25,14 +25,17 @@ mongoUtil.connect(() => {
   console.log("CONNECTED TO MONGODB");
 
   mongoUtil.COLLECTIONS.eventsCollection = mongoUtil.collection("events");
+  mongoUtil.COLLECTIONS.usersCollection = mongoUtil.collection("users");
 
   app.listen(port, () => {
     console.log("Listening on port " + port);
     if(DEV) console.log("RUNNING IN THE DEVELOPMENT");
   });
-
 });
 
 
 const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
 app.use('/events', eventsEndpoints);
+
+const usersEndpoints = require('./modules/endpoints/UsersEndpoints.js');
+app.use('/users', usersEndpoints);

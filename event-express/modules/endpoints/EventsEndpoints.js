@@ -6,12 +6,14 @@ const { v4 } = require('uuid');
 
 const create = async (req, res) => {
   if(!req.body?.name || !req.body?.dates) res.send(respond(2, null, "Missing data"));
-  const { name, dates } = req.body;
-  const id = v4();
-  const data = { id, name, dates };
   
   try {
     const { eventsCollection } = mongoUtil.COLLECTIONS;
+    
+    const { name, dates } = req.body;
+    const id = v4();
+    const data = { id, name, dates };
+
     await eventsCollection.insertOne(data);
     console.log("Creating new event", name);
     res.send(respond(0, data, null));
