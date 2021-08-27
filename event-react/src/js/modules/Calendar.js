@@ -5,6 +5,7 @@ import { findEvent } from '../service/EventsService.js';
 
 const Calendar = () => {
   const [event, setEvent] = useState(null);
+  const [user, setUser] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
@@ -14,8 +15,11 @@ const Calendar = () => {
     };
 
     fetch();
-
   }, [id])
+
+  const handleUserChange = (event) => {
+    setUser(event.target.value);
+  }
 
   if(!event) {
     return (
@@ -26,16 +30,27 @@ const Calendar = () => {
   }
   return (
     <Panel className="calendar center-self flex-col">
-      <label className="medium"> {event?.name} </label>
-      <div className="flex">
-        <Column time/>
-        { event?.dates?.map((d, i ) => <Column date={new Date(d)} key={i}/> )}
+      <div className="flex-col">
+        <label className="medium"> Your Name </label>
+        <input type="text" value={user} onChange={handleUserChange} pattern="([A-z0-9À-ž\s]){2,}"/>
+        <button disabled={user.trim().length === 0}> Sign In </button>
+      </div>
+
+      <div className="flex-col">
+        <label className="medium"> {event?.name} </label>
+        <div className="flex">
+          <Column time/>
+          { event?.dates?.map((d, i ) => <Column date={new Date(d)} key={i}/> )}
+        </div>
       </div>
     </Panel>
   )
 }
 
 const Column = ({ date, time }) => {
+  const month = date?.getUTCMonth();
+  const day = date?.getUTCDate();
+
   const rows = () => {
     let r = [];
     for(var i = 0; i < 24; i++) {
@@ -46,7 +61,7 @@ const Column = ({ date, time }) => {
 
   return (
     <div className="column flex-col"> 
-      {date ? <label className="date flex"> {`${date.getUTCMonth() + 1}/${date.getUTCDate()}`} </label> : <span className="flex"></span>}
+      {date ? <label className="date flex"> {month + 1}/{day} </label> : <span className="flex"></span>}
       <div className="rows flex-col">
         { rows() }
       </div>

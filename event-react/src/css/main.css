@@ -105,7 +105,7 @@ input[type=text], input[type=date] {
 
 .create > * { width: 15rem }
 .create > *:not(:last-child) { margin-bottom: 2rem }
-.create > * *{ margin-bottom: var(--small-margin) }
+.create > * > * { margin-bottom: var(--small-margin) }
 .create input { min-width: 95% }
 
 /*** CALENDAR ***/
@@ -121,6 +121,10 @@ input[type=text], input[type=date] {
 .column {
   user-select: none;
 }
+
+.calendar > *:not(:last-child) { margin-bottom: 2rem }
+.calendar > * > * { margin-bottom: var(--small-margin) }
+.calendar input { min-width: 95% }
 
 .column:not(:first-child) .rows {
   box-shadow: var(--border-sides);
