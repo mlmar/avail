@@ -5,9 +5,11 @@
   --gradient: linear-gradient(10deg, rgb(255, 225, 126) 0%, rgb(255, 236, 236) 50%, rgb(146, 237, 255) 100%);
   --shadow: 0 0 18px 0px rgb(0 0 0 / 15%);
   --radius: 5px;
+
+  --line: rgb(89, 89, 89);
   
-  --border-sides: inset 1.5px 0 1px -1px rgb(0 0 0 / 100%), inset -1.5px 0 1px -1px rgb(0 0 0 / 100%), inset 0 -1.5px 1px -1px rgb(0 0 0 / 100%);
-  --border-bottom: inset 0 1.5px 1px -1px rgb(0 0 0 / 100%);
+  --border-sides: inset 1.5px 0 1px -1px var(--line), inset 0 -1.5px 1px -1px var(--line);
+  --border-top: inset 0 1.5px 1px -1px var(--line);
 
 
   --btn-bg: rgb(237, 237, 237);
@@ -114,11 +116,6 @@ input[type=text], input[type=date] {
 
 .calendar > *:not(:last-child) { margin-bottom: var(--small-margin) }
 
-
-.calendar .column:not(:last-child) {
-  margin-right: .5rem;
-}
-
 .column {
   user-select: none;
 }
@@ -127,24 +124,56 @@ input[type=text], input[type=date] {
 .calendar > * > * { margin-bottom: var(--small-margin) }
 .calendar input { min-width: 95% }
 
-.column:not(:first-child) .rows {
-  box-shadow: var(--border-sides);
+.calendar .column:not(:first-child) {
+  flex: 1 1;
+  min-width: 2.5rem;
 }
 
-.column span {
+/* .calendar .column span {
   height: 1.2rem;
 }
 
-.column:not(:first-child) span {
-  width: 3.5rem;
+.calendar .column:last-child .rows {
+  box-shadow: inset -1.5px 0 1px -1px rgb(0 0 0 / 100%);
 }
 
+.calendar .column:not(:first-child) span:first-child {
+  box-shadow: var(--border-top), var(--border-sides);
+}
 
-.column:not(:first-child) span {
-  box-shadow: var(--border-bottom);
+.calendar .column:not(:first-child) span {
+  box-shadow: var(--border-sides);
   cursor: pointer;
 }
 
-.column .date {
+.calendar .column .date {
   justify-content: center;
+} */
+
+/*** GRID ***/
+
+.grid span, .grid label {
+  height: 1.2rem;
+  user-select: none;
+}
+
+.grid .time {
+  width: 1.2rem;
+}
+
+.grid .date {
+  min-width: 2.5rem;
+}
+
+.grid .squares {
+  flex-wrap: wrap;
+}
+
+.grid .column span:first-child {
+  box-shadow: var(--border-top), var(--border-sides);
+}
+
+.grid .column span {
+  box-shadow: var(--border-sides);
+  cursor: pointer;
 }

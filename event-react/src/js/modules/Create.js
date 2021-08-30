@@ -13,7 +13,7 @@ const Create = () => {
   const [dates, setDates] = useState([DEFAULT_DATE]);
 
   const handleEventName = (event) => {
-    setEventName(event.target.value);
+    setEventName((event.target.value)?.trim());
   }
 
   const isValidDate = (id, value) => {
@@ -38,9 +38,7 @@ const Create = () => {
   }
 
   const handleAddDate = () => {
-    const nextDate = new Date()
-    nextDate.setDate(dates[dates.length-1].getDate() + 1);
-    nextDate.setHours(0, 0, 0, 0);
+    const nextDate = new Date(dates[dates.length-1].valueOf() + 1000*3600*24)
     setDates((prev) => [...prev, nextDate]);
   }
 
