@@ -129,27 +129,6 @@ input[type=text], input[type=date] {
   min-width: 2.5rem;
 }
 
-/* .calendar .column span {
-  height: 1.2rem;
-}
-
-.calendar .column:last-child .rows {
-  box-shadow: inset -1.5px 0 1px -1px rgb(0 0 0 / 100%);
-}
-
-.calendar .column:not(:first-child) span:first-child {
-  box-shadow: var(--border-top), var(--border-sides);
-}
-
-.calendar .column:not(:first-child) span {
-  box-shadow: var(--border-sides);
-  cursor: pointer;
-}
-
-.calendar .column .date {
-  justify-content: center;
-} */
-
 /*** GRID ***/
 
 .grid span, .grid label {
@@ -176,4 +155,5 @@ input[type=text], input[type=date] {
 .grid .column span {
   box-shadow: var(--border-sides);
   cursor: pointer;
+  transition: background .1s ease;
 }

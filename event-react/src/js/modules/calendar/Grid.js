@@ -1,6 +1,10 @@
 const HOURS = 24;
 
-const Grid = ({ dates, counts }) => {
+const Grid = ({ dates, counts, onClick }) => {
+  const handleClick = (event) => {
+    if(onClick) onClick(event.target.id);
+  }
+
   const getTime = () => {
     let time = [<span className="flex" key="placeholder"></span>];
     for(var i = 0; i < HOURS; i++) {
@@ -12,13 +16,13 @@ const Grid = ({ dates, counts }) => {
   const getColumn = (date) => {
     let col = [];
     for(var i = 0; i < HOURS; i++) {
-      const style = counts?.[date] ? (
+      const style = counts?.[date]?.[i] ? (
         {
-          backgroundColor: `rgba(0, 255, 17, ${(counts[date]?.[i] / counts?.max)})`,
+          backgroundColor: `rgba(0, 160, 20, ${(counts[date]?.[i] / counts?.max)})`,
         }
       ) : {};
 
-      col.push(<span className="flex small date" style={style} id={date + "-" + i} key={i}> </span>)
+      col.push(<span className="flex small date" style={style} onClick={handleClick} id={date + "-" + i} key={date + "-" + i}> </span>)
     }
     return col;
   }

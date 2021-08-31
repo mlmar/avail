@@ -24,34 +24,49 @@ const Calendar = () => {
     };
 
     fetch();
-  }, [id])
+  }, [id]);
+
+  const calculateCounts = (countsArr) => {
+    let _counts = {};
+    countsArr.forEach((u) => {
+      u.selected?.forEach((sel) => {
+        const split = sel.split("-");
+        const date = split[0], day = split[1];
+        if(!_counts[date]) _counts[date] = {};
+        _counts[date][day] = (_counts[date][day] || 0) + 1;
+      });
+    });
+    return _counts;
+  }
 
   useEffect(() => {
     const fetch = async () => {
       const usersResponse = await findUsers(id)
-
-      let _counts = {};
-      usersResponse?.data?.forEach((u) => {
-        u.selected?.forEach((sel) => {
-          const split = sel.split("-");
-          const date = split[0], day = split[1];
-          if(!_counts[date]) _counts[date] = {};
-          _counts[date][day] = (_counts[date][day] || 0) + 1;
-        });
-      });
-      
+      let _counts = calculateCounts(usersResponse?.data);
       _counts.max = usersResponse.data?.length;
       setCounts(_counts);
     }
 
-    fetch();
+    if(!editing) fetch();
   }, [id, editing])
+
+
+  const calculateSelectedCounts = () => {
+    const _counts = { max: 1 };
+    selected.forEach((value) => {
+      const split = value.split("-");
+      const date = split[0], day = split[1];
+      if(!_counts[date]) _counts[date] = {};
+      _counts[date][day] = 1;
+    });
+    return _counts;
+  }
 
   const handleUserChange = (event) => {
     setUser(event.target.value);
   }
 
-  const handleColumnClick = (date) => {
+  const handleGridClick = (date) => {
     if(!editing) return;
 
     setSelected((prev) => {
@@ -94,15 +109,7 @@ const Calendar = () => {
     <Panel className="calendar center-self flex-col">
       <div className="flex-col">
         <label className="medium"> {event?.name} </label>
-        {/* <div className="flex">
-          <Column time/>
-          { event?.dates?.map((d, i ) => {
-            const _date = new Date(d);
-            const date = (_date.getUTCMonth() + 1) + "/" + _date.getUTCDate();
-            return <Column date={date} counts={counts[date]} max={counts.max} editing={editing} onClick={handleColumnClick} key={i}/> 
-          })}
-        </div> */}
-        <Grid dates={event?.dates} counts={counts}/>
+        <Grid dates={event?.dates} counts={editing ? calculateSelectedCounts() : counts} onClick={handleGridClick}/>
       </div>
 
       { !signedIn &&
@@ -114,7 +121,7 @@ const Calendar = () => {
       }
 
       { signedIn && !editing && 
-        <button onClick={handleEdit}> Edit </button>
+        <button onClick={handleEdit}> Edit Your Availability </button>
       }
 
       { editing &&
