@@ -48,7 +48,20 @@ const findOne = async (req, res) => {
   } catch(error) {
     res.send(respond(1, null, error?.toString()));
   }
+}
 
+const deleteOne = async (req, res) => {
+  if(!req.body?.id || !req.body?.user) res.send(respond(2, null, "Missing data"));
+
+  try {
+    const { usersCollection } = mongoUtil.COLLECTIONS;
+    const { id, user } = req.body;
+    const filter = { id: { $eq: id }, user: { $eq: user }};
+    const response = await usersCollection.deleteOne(filter);
+    res.send(respond(0, response, null));
+  } catch(error) {
+    res.send(respond(1, null, error?.toString()));
+  }
 }
 
 const all = async (req, res) => {
@@ -65,4 +78,5 @@ const all = async (req, res) => {
 router.post('/update', update);
 router.post('/find', find);
 router.post('/find-one', findOne);
+router.post('/delete-one', deleteOne);
 router.get('/all', all);

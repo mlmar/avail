@@ -3,7 +3,8 @@ import { post } from './HTTPService.js';
 const ENDPOINTS = {
   UPDATE: 'users/update',
   FIND: 'users/find',
-  FIND_ONE: 'users/find-one'
+  FIND_ONE: 'users/find-one',
+  DELETE_ONE: 'users/delete-one'
 }
 
 export const updateUser = async (eventObj) => {
@@ -18,5 +19,10 @@ export const findUsers = async (id) => {
 
 export const findUser = async(userObj) => {
   const response = await post(ENDPOINTS.FIND_ONE, userObj);
+  return response;
+}
+
+export const deleteUser = async(userObj) => {
+  const response = await post(ENDPOINTS.DELETE_ONE, userObj);
   return response;
 }

@@ -33,11 +33,12 @@ const find = async (req, res) => {
     
     if(response) {
       console.log("Found event", id);
+      res.send(respond(0, response, null));
     } else {
       console.log("Did not find event", id);
+      res.send(respond(3, response, null));
     }
     
-    res.send(respond(0, response, null));
   } catch(error) {
     console.log("Error finding event");
     res.send(respond(1, null, error?.toString()));

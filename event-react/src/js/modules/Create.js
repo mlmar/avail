@@ -7,6 +7,10 @@ import { createEvent } from '../service/EventsService.js';
 const DEFAULT_DATE = new Date();
 DEFAULT_DATE.setHours(0, 0, 0, 0);
 
+/*
+  Create component home page
+    - shows input for event name and function to add calendar days to the event
+*/
 const Create = () => {
   const [redirect, setRedirect] = useState(null);
   const [eventName, setEventName] = useState("");
@@ -16,32 +20,38 @@ const Create = () => {
     setEventName((event.target.value)?.trim());
   }
 
-  const isValidDate = (id, value) => {
-    const _id = parseInt(id);
+  /*
+    prevent identical dates
+      - returns valid date if true
+  */
+  const isValidDate = (value) => {
     const userDate = new Date(value.split("-"));
-    const isGreater = dates[_id - 1] ? dates[_id - 1] < userDate : true;
-    const isLess = dates[_id + 1] ? userDate < dates[_id + 1] : true;
-    return isGreater && isLess ? userDate : false;
+    const identical = dates.find((d) => d.getTime() === userDate.getTime());
+    return !identical ? userDate : false;
   }
 
+  // validates date then reorders the date array
   const handleDateChange = (event) => {
     const { id, value } = event.target;
 
     setDates((prev) => {
-      let changes = [...prev];
-      const validated = isValidDate(id, value);
+      let next = [...prev];
+      const validated = isValidDate(value);
       if(validated) {
-        changes[id] = validated;
+        next[id] = validated;
       }
-      return changes;
+      next = next.sort((a,b) => a - b);
+      return next;
     });
   }
 
+  // adds the next day after the most recent date by default
   const handleAddDate = () => {
     const nextDate = new Date(dates[dates.length-1].valueOf() + 1000*3600*24)
     setDates((prev) => [...prev, nextDate]);
   }
 
+  // make creation request to server containing event info then redirect user
   const handleCreate = async () => {
     const event = { name: eventName.trim(), dates };
     const response = await createEvent(event);
@@ -60,7 +70,7 @@ const Create = () => {
 
       <div className="flex-col">
         <label className="medium"> Event Date </label>
-        { dates.map((date, i) => <input type="date" value={date.toLocaleDateString('en-CA')} onChange={handleDateChange} id={i} key={i}/> )}
+        { dates.map((date, i) => <input type="date" value={date.toLocaleDateString('en-CA')} onChange={handleDateChange} id={i} key={date.getTime()}/> )}
         <button onClick={handleAddDate}> + Add Another Date </button>
       </div>
 

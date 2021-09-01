@@ -137,7 +137,13 @@ input[type=text], input[type=date] {
 }
 
 .grid .time {
-  width: 1.2rem;
+  width: 2.5rem;
+  align-items: flex-end;
+}
+
+.grid .time * {
+  align-items: flex-end;
+  font-size: .65rem;
 }
 
 .grid .date {
@@ -156,4 +162,23 @@ input[type=text], input[type=date] {
   box-shadow: var(--border-sides);
   cursor: pointer;
   transition: background .1s ease;
+}
+
+
+/*** LOAD ***/
+
+.load {
+  width: 15rem;
+  height: 15rem;
+  border: .5rem rgb(138, 138, 138) solid;
+  border-right: .5rem transparent solid ;
+  border-radius: 50%;
+  animation: spin .75s linear infinite;
+  margin: auto !important;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
