@@ -34,8 +34,8 @@ mongoUtil.connect(() => {
 });
 
 
-const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
-app.use('/events', eventsEndpoints);
+// const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
+// app.use('/events', eventsEndpoints);
 
-const usersEndpoints = require('./modules/endpoints/UsersEndpoints.js');
-app.use('/users', usersEndpoints);
+// const usersEndpoints = require('./modules/endpoints/UsersEndpoints.js');
+// app.use('/users', usersEndpoints);
