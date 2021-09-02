@@ -20,18 +20,23 @@ msg     : message string
 respond = (status, data, msg) => new Object({ status, data, msg });
 
 
-const mongoUtil = require('./util/MongoUtil.js');
-mongoUtil.connect(() => {
-  console.log("CONNECTED TO MONGODB");
-
-  mongoUtil.COLLECTIONS.eventsCollection = mongoUtil.collection("events");
-  mongoUtil.COLLECTIONS.usersCollection = mongoUtil.collection("users");
-
-  app.listen(port, () => {
-    console.log("Listening on port " + port);
-    if(DEV) console.log("RUNNING IN THE DEVELOPMENT");
-  });
+app.listen(port, () => {
+  console.log("Listening on port " + port);
+  if(DEV) console.log("RUNNING IN THE DEVELOPMENT");
 });
+
+// const mongoUtil = require('./util/MongoUtil.js');
+// mongoUtil.connect(() => {
+//   console.log("CONNECTED TO MONGODB");
+
+//   mongoUtil.COLLECTIONS.eventsCollection = mongoUtil.collection("events");
+//   mongoUtil.COLLECTIONS.usersCollection = mongoUtil.collection("users");
+
+//   app.listen(port, () => {
+//     console.log("Listening on port " + port);
+//     if(DEV) console.log("RUNNING IN THE DEVELOPMENT");
+//   });
+// });
 
 
 // const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
