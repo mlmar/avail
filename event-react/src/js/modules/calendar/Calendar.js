@@ -2,9 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { findEvent } from '../../service/EventsService.js';
 import { updateUser, findUsers, findUser, deleteUser } from '../../service/UsersService.js';
+import { HOME_URL } from '../../util/System.js';
+
 import { Panel } from '../ui/Interface.js';
+import { useToast } from '../ui/Toast.js';
 import Load from '../ui/Load.js'
 import Grid from './Grid.js';
+import Icon from '../ui/Icon.js';
 
 /*
   Calendar component
@@ -22,6 +26,8 @@ const Calendar = () => {
 
   const [signedIn, setSignedIn] = useState(false);
   const [editing, setEditing] = useState(false);
+
+  const [toast, setToast] = useToast();
 
   // arbitrarily calculates only current users availability to show during editing
   const calculateSelectedCounts = () => {
@@ -131,6 +137,11 @@ const Calendar = () => {
     setEditing(false);
   }
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(HOME_URL + "/" + id);
+    setToast("URL copied to clipboard. Send it to anyone you want.")
+  }
+
   // default loading screen to show 
   if(eventInfo?.loading) {
     return <Load/>
@@ -147,28 +158,28 @@ const Calendar = () => {
 
   // otherwise show calendar
   return (
-    <Panel className="calendar center-self flex-col">
-      <div className="flex-col">
-        <label className="medium"> {eventInfo?.name} </label>
-        <Grid dates={getDateStrings()} counts={editing ? calculateSelectedCounts() : counts} onSelect={handleSelect} editing={editing}/>
-      </div>
-
-      { !signedIn &&
+    <>
+      {toast}
+      <Panel className="calendar center-self flex-col">
         <div className="flex-col">
-          <label className="medium"> Your Name </label>
-          <input type="text" value={user} onChange={handleUserChange} pattern="([A-z0-9À-ž\s]){2,}"/>
-          <button disabled={user.trim().length === 0} onClick={handleSignIn}> Sign In </button>
+          <label className="medium"> {eventInfo?.name} </label>
+          <label className="small link" title="copy link to clipboard" onClick={handleCopy}> {id} <Icon type="clipboard"/> </label>
         </div>
-      }
 
-      { signedIn && !editing && 
-        <button onClick={setEditing}> Edit Your Availability </button>
-      }
+        <Grid dates={getDateStrings()} counts={editing ? calculateSelectedCounts() : counts} onSelect={handleSelect} editing={editing}/>
+        
+        { !signedIn &&
+          <div className="flex-col">
+            <label className="medium"> Your Name </label>
+            <input type="text" value={user} onChange={handleUserChange} pattern="([A-z0-9À-ž\s]){2,}"/>
+            <button disabled={user.trim().length === 0} onClick={handleSignIn}> Sign In </button>
+          </div>
+        }
 
-      { editing &&
-        <button onClick={handleSave}> Save Changes </button>
-      }
-    </Panel>
+        { (signedIn && !editing) && <button onClick={setEditing}> Edit Your Availability </button> }
+        { editing && <button onClick={handleSave}> Save Changes </button> }
+      </Panel>
+    </>
   )
 }
 

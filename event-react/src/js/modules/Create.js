@@ -47,7 +47,7 @@ const Create = () => {
 
   // adds the next day after the most recent date by default
   const handleAddDate = () => {
-    const nextDate = new Date(dates[dates.length-1].valueOf() + 1000*3600*24)
+    const nextDate = new Date(dates[dates.length-1].valueOf() + 1000*3600*24);
     setDates((prev) => [...prev, nextDate]);
   }
 

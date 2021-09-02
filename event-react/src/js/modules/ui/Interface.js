@@ -1,1 +1,1 @@
-export const Panel = ({ className, children }) => <div className={"panel " + (className || "")}> {children} </div>
+export const Panel = ({ className, children, onClick }) => <div className={"panel " + (className || "")} onClick={onClick}> {children} </div>
