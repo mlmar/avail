@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const CONNECTION_STRING = process.env.MONGODB_CONNECTION_URL;
 const DATABASE_STRING = process.env.DATABASE;
