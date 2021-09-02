@@ -33,11 +33,7 @@ const connectFunc = () => {
   });
 }
 
-const errorFunc = (error) => {
-  console.log(error);
-}
-
-mongoUtil.connect(connectFunc, errorFunc);
+mongoUtil.connect(connectFunc);
 
 
 const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
