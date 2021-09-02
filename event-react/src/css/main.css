@@ -166,7 +166,7 @@ input[type=text], input[type=date] {
 }
 
 .grid .date {
-  min-width: 2.5rem;
+  min-width: 2.7rem;
 }
 
 .grid .column span:first-child {

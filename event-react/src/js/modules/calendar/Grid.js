@@ -24,8 +24,6 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
   const [selected, setSelected] = useState({ max: 1 }); // placeholder counts for current selection
   const selectedRef = useRef([]);
 
-  const [test, setTest] = useState('test')
-
   // Finds the index of a specific {month/day} string in the dates array
   const findDateIndex = (date) => {
     const index = dates.findIndex((d) => {
@@ -47,7 +45,7 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
       - essentially anchors every time mouse is down
   */
   const handleMouseDown = (event) => {
-    const { nodeName, id } = event.target;
+    let { nodeName, id } = event.target;
     if(!editing || nodeName !== "SPAN") return;
 
     const split = id.split("-");
@@ -61,13 +59,22 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
     if anchored and editing, while mouse is moving, dynamically select all cells between anchor and current position
   */
   const handleMouseMove = (event) => {
-    const { nodeName, id } = event.target;
+    let { nodeName, id } = event.target;
     if(!anchor || !editing || nodeName !== "SPAN") return;
+    
+    if(event.touches?.[0]) { // if touch screen
+      event.preventDefault();
+      const element = document.elementFromPoint(event.touches?.[0]?.clientX, event.touches?.[0]?.clientY); // get touched element
+      nodeName = element.nodeName;
+      id = element.id;
+      if(!id) { // if not in grid, simulate mouse leave
+        handleMouseUp(event);
+        return;
+      }
+    }
     
     // prevent rerendering within the same cell
     if(id === posRef.current?.id || id === anchor.id) return;
-
-    setTest(posRef.current.id);
     
     const split = id.split("-");
     const date = split[0], time = parseInt(split[1]);
@@ -140,7 +147,6 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
 
   return (
     <div className="flex grid">
-      <label> {test} </label>
       <div className="flex-col">
         {getTimes()}
       </div>
