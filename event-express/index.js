@@ -24,8 +24,8 @@ const mongoUtil = require('./util/MongoUtil.js');
 mongoUtil.connect(() => {
   console.log("CONNECTED TO MONGODB");
 
-  mongoUtil.COLLECTIONS.eventsCollection = mongoUtil.collection("events");
-  mongoUtil.COLLECTIONS.usersCollection = mongoUtil.collection("users");
+  // mongoUtil.COLLECTIONS.eventsCollection = mongoUtil.collection("events");
+  // mongoUtil.COLLECTIONS.usersCollection = mongoUtil.collection("users");
 
   app.listen(port, () => {
     console.log("Listening on port " + port);
@@ -34,8 +34,8 @@ mongoUtil.connect(() => {
 });
 
 
-const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
-app.use('/events', eventsEndpoints);
+// const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
+// app.use('/events', eventsEndpoints);
 
-const usersEndpoints = require('./modules/endpoints/UsersEndpoints.js');
-app.use('/users', usersEndpoints);
+// const usersEndpoints = require('./modules/endpoints/UsersEndpoints.js');
+// app.use('/users', usersEndpoints);
