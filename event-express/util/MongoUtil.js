@@ -6,10 +6,11 @@ const OPTIONS = {};
 
 let CLIENT = null;
 
-const connect = (callback) => {
+const connect = (callback, error) => {
   MongoClient.connect(CONNECTION_STRING, OPTIONS, (err, c) => {
     CLIENT = c;
     if(callback) callback();
+    if(err) error(err);
   });
 }
 

@@ -21,7 +21,7 @@ respond = (status, data, msg) => new Object({ status, data, msg });
 
 
 const mongoUtil = require('./util/MongoUtil.js');
-mongoUtil.connect(() => {
+const connectFunc = () => {
   console.log("CONNECTED TO MONGODB");
 
   mongoUtil.COLLECTIONS.eventsCollection = mongoUtil.collection("events");
@@ -31,7 +31,13 @@ mongoUtil.connect(() => {
     console.log("Listening on port " + port);
     if(DEV) console.log("RUNNING IN THE DEVELOPMENT");
   });
-});
+}
+
+const errorFunc = (error) => {
+  console.log(error);
+}
+
+mongoUtil.connect(connectFunc, errorFunc);
 
 
 const eventsEndpoints = require('./modules/endpoints/EventsEndpoints.js');
