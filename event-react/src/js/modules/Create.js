@@ -17,7 +17,7 @@ const Create = () => {
   const [dates, setDates] = useState([DEFAULT_DATE]);
 
   const handleEventName = (event) => {
-    setEventName((event.target.value)?.trim());
+    setEventName(event.target.value);
   }
 
   /*
@@ -25,7 +25,7 @@ const Create = () => {
       - returns valid date if true
   */
   const isValidDate = (value) => {
-    const userDate = new Date(value.split("-"));
+    const userDate = new Date(value);
     const identical = dates.find((d) => d.getTime() === userDate.getTime());
     return !identical ? userDate : false;
   }
@@ -33,7 +33,7 @@ const Create = () => {
   // validates date then reorders the date array
   const handleDateChange = (event) => {
     const { id, value } = event.target;
-
+    
     setDates((prev) => {
       let next = [...prev];
       const validated = isValidDate(value);

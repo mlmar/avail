@@ -152,6 +152,7 @@ input[type=text], input[type=date] {
 .grid span, .grid label {
   height: 1.2rem;
   user-select: none;
+  touch-action: none;
 }
 
 .grid .time {
@@ -175,7 +176,7 @@ input[type=text], input[type=date] {
 .grid .column span {
   box-shadow: var(--border-sides);
   cursor: pointer;
-  transition: background .1s ease;
+  /* transition: background .1s ease; */
 }
 
 
@@ -189,9 +190,14 @@ input[type=text], input[type=date] {
   bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  cursor: pointer;
   background: var(--gray);
   padding: 1rem;
+  width: 90vw;
+  max-width: 30rem;
+}
+
+.toast, .toast * {
+  cursor: pointer;
 }
 
 .toast .icon {

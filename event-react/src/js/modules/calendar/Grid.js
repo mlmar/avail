@@ -3,8 +3,9 @@ import { useState, useRef } from 'react';
 const HOURS = 24;
 const TIMES = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 const COLORS = {
-  GREEN: (opacity) => `rgba(0, 160, 20, ${opacity || 1})`,
-  RED: (opacity) => `rgba(255, 44, 44, ${opacity || 1})`,
+  GREEN:  (opacity) => `rgba(0, 160, 20, ${opacity || 1})`,
+  RED:    (opacity) => `rgba(255, 44, 44, ${opacity || 1})`,
+  PURPLE: (opacity) => `rgba(205, 173, 247, ${opacity || 1})`,
 }
 
 /*
@@ -22,6 +23,8 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
 
   const [selected, setSelected] = useState({ max: 1 }); // placeholder counts for current selection
   const selectedRef = useRef([]);
+
+  const [test, setTest] = useState('test')
 
   // Finds the index of a specific {month/day} string in the dates array
   const findDateIndex = (date) => {
@@ -60,16 +63,18 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
   const handleMouseMove = (event) => {
     const { nodeName, id } = event.target;
     if(!anchor || !editing || nodeName !== "SPAN") return;
-
+    
     // prevent rerendering within the same cell
     if(id === posRef.current?.id || id === anchor.id) return;
+
+    setTest(posRef.current.id);
     
     const split = id.split("-");
     const date = split[0], time = parseInt(split[1]);
     const index = findDateIndex(date);
     
     posRef.current = { id, time, index };
-
+    
     const next = { max: 1}
 
     let startDate = Math.min(anchor.index, index);
@@ -78,7 +83,6 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
     let endTime = Math.max(anchor.time, time);
 
     let nextCounts = [];
-
     for(var i = startDate; i <= endDate; i++) {
       for(var j = startTime; j <= endTime; j++) {
         if(!next[dates[i]]) next[dates[i]] = {};
@@ -92,7 +96,8 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
   }
 
   // save/delete currently selected cells based on the anchor cell
-  const handleMouseUp = () => {
+  const handleMouseUp = (event) => {
+    event.preventDefault();
     if(!editing || !anchor) return;
     if(onSelect) {
       if(!posRef.current.id) { // if mouse never moved outside of anchor, perform the normal action
@@ -124,18 +129,18 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
         backgroundColor: anchor.type === "delete" ? COLORS.RED() : COLORS.GREEN(),
       }) : null;
 
-      const style = counts?.[date]?.[i] ? ({
-        backgroundColor: COLORS.GREEN((counts[date]?.[i] / counts?.max)),
+      const allStyle = counts?.[date]?.[i] ? ({ 
+        backgroundColor: COLORS.GREEN((counts[date]?.[i] / counts?.max)) 
       }) : null;
-
-
-      col.push(<span className="flex small date" style={selectedStyle || style} id={date + "-" + i} key={date + "-" + i}> </span>)
+      
+      col.push(<span className="flex small date" style={selectedStyle || allStyle} id={date + "-" + i} key={date + "-" + i}> </span>)
     }
     return col;
   }
 
   return (
     <div className="flex grid">
+      <label> {test} </label>
       <div className="flex-col">
         {getTimes()}
       </div>
@@ -145,6 +150,10 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
           onMouseMove={handleMouseMove} 
           onMouseUp={handleMouseUp} 
           onMouseLeave={handleMouseUp}
+
+          onTouchStart={handleMouseDown}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
         >
           { dates?.map((date, i) => {
             return (

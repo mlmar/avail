@@ -1,7 +1,8 @@
 const DEV = process.env.REACT_APP_DEV;
 
 const LOCAL_CLIENT = "http://localhost:3000";
-const LOCAL_SERVER = "http://localhost:3300";
+// const LOCAL_SERVER = "http://localhost:3300";
+const LOCAL_SERVER = "http://192.168.1.74:3300";
 
 const DEPLOYED = null;
 

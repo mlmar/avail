@@ -19,7 +19,7 @@ const Calendar = () => {
   const { id } = useParams();
 
   const [eventInfo, setEventInfo] = useState({ loading: true }); // event name and date
-  const [counts, setCounts] = useState({}); // contains availability counts
+  const [counts, setCounts] = useState(); // contains availability counts
 
   const [user, setUser] = useState(""); // user name
   const [selected, setSelected] = useState(new Set()); // current user's date availability
@@ -41,13 +41,19 @@ const Calendar = () => {
     return _counts;
   }
 
-  // calculates date availability based on all users from server
+  /*
+    calculates date availability based on all users from server
+      - {counts.all} will contain all user's availability
+      - {counts.excluded} will exclude the current user
+  */
   const calculateCounts = (countsArr) => {
     let _counts = { max: countsArr.length };
+
     countsArr.forEach((u) => {
       u.selected?.forEach((sel) => {
         const split = sel.split("-");
         const date = split[0], time = split[1];
+
         if(!_counts[date]) _counts[date] = {};
         _counts[date][time] = (_counts[date][time] || 0) + 1;
       });
@@ -57,19 +63,21 @@ const Calendar = () => {
   
   // retreive event and user availability from server
   useEffect(() => {
-    const fetch = async () => {
+    const fetchEvent = async() => {
       const eventResponse = await findEvent(id)
       setEventInfo(eventResponse?.data);
       if(!eventResponse?.data) return;
       document.title = eventResponse?.data.name
+    }
 
+    const fetchUsers = async () => {
       const usersResponse = await findUsers(id)
       let _counts = calculateCounts(usersResponse?.data);
-      _counts.max = usersResponse.data?.length;
       setCounts(_counts);
     };
 
-    fetch();
+    fetchEvent();
+    fetchUsers();
   }, [id]);
 
   // returns date strings based on date object values from the server
@@ -132,14 +140,14 @@ const Calendar = () => {
     }
 
     const usersResponse = await findUsers(id)
-    let _counts = calculateCounts(usersResponse?.data);
+    let _counts = calculateCounts(usersResponse?.data, user);
     setCounts(_counts);
     setEditing(false);
   }
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(HOME_URL + "/" + id);
-    setToast("URL copied to clipboard. Send it to anyone you want.")
+    navigator?.clipboard?.writeText(HOME_URL + "/" + id);
+    setToast("URL copied to clipboard. Share it with anyone you want.")
   }
 
   // default loading screen to show 
@@ -163,10 +171,18 @@ const Calendar = () => {
       <Panel className="calendar center-self flex-col">
         <div className="flex-col">
           <label className="medium"> {eventInfo?.name} </label>
+          <label className="small"> Invite people by sending them the link to this page. </label>
+          <label className="small"> Press on the code below to copy the link: </label>
           <label className="small link" title="copy link to clipboard" onClick={handleCopy}> {id} <Icon type="clipboard"/> </label>
         </div>
 
-        <Grid dates={getDateStrings()} counts={editing ? calculateSelectedCounts() : counts} onSelect={handleSelect} editing={editing}/>
+        { editing ? (
+            <Grid dates={getDateStrings()} counts={calculateSelectedCounts()} onSelect={handleSelect} editing={editing}/>
+          ) : (
+            <Grid dates={getDateStrings()} counts={counts}/>
+          )
+        }
+        
         
         { !signedIn &&
           <div className="flex-col">
