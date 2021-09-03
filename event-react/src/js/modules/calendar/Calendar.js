@@ -32,30 +32,23 @@ const Calendar = () => {
   // arbitrarily calculates only current users availability to show during editing
   const calculateSelectedCounts = () => {
     const _counts = { max: 1 };
-    selected.forEach((value) => {
-      const split = value.split("-");
-      const date = split[0], time = split[1];
-      if(!_counts[date]) _counts[date] = {};
-      _counts[date][time] = 1;
+    selected.forEach((dateID) => {
+      _counts[dateID] = { amount : 1, users: [] };
     });
     return _counts;
   }
 
   /*
     calculates date availability based on all users from server
-      - {counts.all} will contain all user's availability
-      - {counts.excluded} will exclude the current user
   */
   const calculateCounts = (countsArr) => {
     let _counts = { max: countsArr.length };
 
     countsArr.forEach((u) => {
-      u.selected?.forEach((sel) => {
-        const split = sel.split("-");
-        const date = split[0], time = split[1];
-
-        if(!_counts[date]) _counts[date] = {};
-        _counts[date][time] = (_counts[date][time] || 0) + 1;
+      u.selected?.forEach((dateID) => {
+        if(!_counts[dateID]) _counts[dateID] = { amount: 0, users: []};
+        _counts[dateID].amount = _counts[dateID].amount + 1;
+        _counts[dateID].users = [..._counts[dateID].users, u.user];
       });
     });
     return _counts;
@@ -176,15 +169,13 @@ const Calendar = () => {
           <label className="small link" title="copy link to clipboard" onClick={handleCopy}> {id} <Icon type="clipboard"/> </label>
         </div>
 
+
         { editing ? (
-            <Grid dates={getDateStrings()} counts={calculateSelectedCounts()} onSelect={handleSelect} editing={editing}/>
+          <Grid dates={getDateStrings()} counts={calculateSelectedCounts()} onSelect={handleSelect} editing={editing}/>
           ) : (
             <Grid dates={getDateStrings()} counts={counts}/>
           )
         }
-
-        <label className="small"> Darker colors mean more people are available. </label>
-        
         
         { !signedIn &&
           <div className="flex-col">

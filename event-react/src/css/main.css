@@ -123,7 +123,7 @@ input[type=text], input[type=date] {
 
 .calendar > *:not(:last-child) { margin-bottom: var(--small-margin) }
 
-.calendar > *:not(:last-child) { margin-bottom: 2rem }
+.calendar > *:not(:last-child) { margin-bottom: .8rem }
 .calendar > * > * { margin-bottom: var(--small-margin) }
 .calendar input { min-width: 95% }
 
@@ -144,37 +144,42 @@ input[type=text], input[type=date] {
 
 /*** GRID ***/
 
-.grid {
+.grid .description > * {
+  margin-bottom: var(--small-margin);
+}
+
+.cells {
   justify-content: center;
   user-select: none;
   touch-action: none;
+  margin-bottom: 1rem;
 }
 
-.grid span, .grid label {
+.cells span, .cells label {
   height: 1.2rem;
   user-select: none;
 }
 
-.grid .time {
+.cells .time {
   width: 2.5rem;
   align-items: flex-end;
 }
 
-.grid .time * {
+.cells .time * {
   align-items: flex-end;
   font-size: .65rem;
 }
 
-.grid .date {
+.cells .date {
   min-width: 2.7rem;
 }
 
 
-.grid .column span:first-child {
+.cells .column span:first-child {
   box-shadow: var(--border-top), var(--border-sides);
 }
 
-.grid .column span {
+.cells .column span {
   box-shadow: var(--border-sides);
   cursor: pointer;
   /* transition: background .1s ease; */

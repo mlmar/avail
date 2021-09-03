@@ -65,7 +65,7 @@ const Create = () => {
 
       <div className="flex-col">
         <label className="medium"> Event Name </label>
-        <input type="text" value={eventName} onChange={handleEventName} pattern="([A-z0-9À-ž\s]){2,}"/>
+        <input type="text" value={eventName} onChange={handleEventName} pattern="([A-z0-9À-ž\s]){2,}" title="Event Name"/>
       </div>
 
       <div className="flex-col">

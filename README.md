@@ -21,9 +21,9 @@
 
 
 ## Installation
-- Run `npm install` in both `tonedeaf-express` and `tonedeaf-react` folders
-- Run `npm start` in `tonedeaf-express` to start the node server for authentication and demo services
-- Run `npm start` in `tonedeaf-react` to start the client
+- Run `npm install` in both `event-express` and `event-react` folders
+- Run `npm start` in `event-express` to start the node server for mongo services
+- Run `npm start` in `event-react` to start the client
 
 
 ## Environment Variables

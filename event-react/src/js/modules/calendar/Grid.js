@@ -24,25 +24,18 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
   const posRef = useRef({}); // current mouse cell position
 
   const [selected, setSelected] = useState({ max: 1 }); // placeholder counts for current selection
-  const selectedRef = useRef([]);
-
   const gridRef = useRef(null);
 
-  const [available, setAvailable] = useState({ amount: 0, users: []})
+  const [available, setAvailable] = useState(null)
 
   // Finds the index of a specific {month/day} string in the dates array
-  const findDateIndex = (date) => {
-    const index = dates.findIndex((d) => {
-      return d === date;
-    });
-    return index;
-  }
+  const findDateIndex = (date) => dates.findIndex((d) => d === date);
 
   // resets all user selections
-  const reset = () => {
+  const resetSelection = () => {
     setAnchor(null)
     setSelected({ max: 1 });
-    posRef.current = ({});
+    posRef.current = {};
   }
 
   /*
@@ -57,7 +50,7 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
     const split = id.split("-");
     const date = split[0], time = parseInt(split[1]);
     const index = findDateIndex(date);
-    const type = counts?.[date]?.[time] ? "delete" : "add"; // delete selected cells if anchor is already selected
+    const type = counts?.[id] ? "delete" : "add"; // delete selected cells if anchor is already selected
     setAnchor({ id, time, index, type });
   }
 
@@ -77,55 +70,56 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
       }
     }
     
+    // get date and time from currently hovered id
     const split = id.split("-");
     const date = split[0], time = parseInt(split[1]);
     const index = findDateIndex(date);
     
-    setAvailable((prev) => ({ ...prev, amount: (counts[date]?.[time] || 0)}));
+    setAvailable(counts[id]);
     
     if(!anchor || !editing || nodeName !== "SPAN") return;
     
-    
     // prevent rerendering within the same cell
     if(id === posRef.current?.id || id === anchor.id) return;
-    
     
     posRef.current = { id, time, index };
     
     const next = { max: 1}
 
+    // get (x, y) or (date, time) coordinates on the grid when selecting
     let startDate = Math.min(anchor.index, index);
     let endDate = Math.max(anchor.index, index);
     let startTime = Math.min(anchor.time, time);
     let endTime = Math.max(anchor.time, time);
 
-    let nextCounts = [];
     for(var i = startDate; i <= endDate; i++) {
       for(var j = startTime; j <= endTime; j++) {
-        if(!next[dates[i]]) next[dates[i]] = {};
-        next[dates[i]][j] = 1;
-        nextCounts.push(dates[i] + "-" + j);
+        const dateID = dates[i] + "-" + j;
+        next[dateID] = { amount: 1 };
       }
     }
     
     setSelected(next);
-    selectedRef.current = nextCounts;
   }
 
   // save/delete currently selected cells based on the anchor cell
   const handleMouseUp = (event) => {
     event?.preventDefault();
+
+    // setAvailable(null);
+
     if(!editing || !anchor) return;
     if(onSelect) {
       if(!posRef.current.id) { // if mouse never moved outside of anchor, perform the normal action
         onSelect(anchor.id);
       } else { // otherwise do action specified by anchor to cell selected cells
-        selectedRef.current.forEach((val) => onSelect(val, anchor.type));
+        Object.keys(selected).forEach((key) => onSelect(key, anchor.type));
       }
     }
-    reset();
+    resetSelection();
   }
 
+  // left and right scroll paddles for mobile devices
   const handleScrollButton = (event) => {
     let { nodeName, id } = event.target;
     if(nodeName !== "BUTTON") return;
@@ -149,22 +143,23 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
   const getColumn = (date) => {
     let col = [];
     for(var i = 0; i < HOURS; i++) {
-      const selectedStyle = selected?.[date]?.[i] ? ({
+      const dateID = date + "-" + i;
+      const selectedStyle = selected?.[dateID]?.amount ? ({
         backgroundColor: anchor.type === "delete" ? COLORS.RED() : COLORS.GREEN(),
       }) : null;
 
-      const allStyle = counts?.[date]?.[i] ? ({ 
-        backgroundColor: COLORS.GREEN((counts[date]?.[i] / counts?.max)) 
+      const allStyle = counts?.[dateID]?.amount ? ({ 
+        backgroundColor: COLORS.GREEN((counts[dateID]?.amount / counts?.max)) 
       }) : null;
       
-      col.push(<span className="flex small date cell" style={selectedStyle || allStyle} id={date + "-" + i} key={date + "-" + i}> </span>)
+      col.push(<span className="flex small date cell" style={selectedStyle || allStyle} id={dateID} key={dateID}> </span>)
     }
     return col;
   }
 
   return (
-    <div className="flex-col">
-      <div className={"flex grid"} ref={gridRef}> 
+    <div className="flex-col grid">
+      <div className="flex cells" ref={gridRef}> 
         <div className="flex-col">
           {getTimes()}
         </div>
@@ -191,12 +186,27 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
         </div>
       </div>
       
-      <div className="flex scroll-buttons mobile" onClick={handleScrollButton}>
-        <button className="medium" id="left-scroll"> &#8592; </button>
-        <button className="medium" id="right-scroll"> &#8594; </button>
-      </div>
+      { dates?.length > 8 && 
+        <div className="flex scroll-buttons mobile" onClick={handleScrollButton}>
+          <button className="medium" id="left-scroll"> &#8592; </button>
+          <button className="medium" id="right-scroll"> &#8594; </button>
+        </div>
+      }
 
-      <label className="small"> {available.amount} people available </label>
+      { !editing &&
+        <div className="flex-col description">
+          <label className="small"> Darker colors mean more people are available. </label>
+          <label className="small"> Hover over a cell to see who's available. </label>
+          
+          { available?.amount ? (
+            <label className="small bold"> {available?.amount} {available?.amount === 1 ? "person" : "people"} available </label>
+          ) : (
+            <label className="small bold"> &nbsp; </label>
+          )}
+
+          <label className="small bold"> {available?.users?.join(", ") || <> &nbsp; </>} </label>
+        </div>
+      }
     </div>
   )
 }

@@ -19,11 +19,10 @@
     width: 100%;
   }
 
-  .grid {
+  .cells {
     max-width: 100%;
     width: fit-content;
     overflow-x: auto;
     justify-content: flex-start;
   }
-
 }
