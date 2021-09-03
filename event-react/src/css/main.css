@@ -86,6 +86,10 @@ input[type=text], input[type=date] {
   font-size: .8rem;
 }
 
+.touch-x {
+  touch-action: pan-x !important;
+}
+
 /*** DIV ***/
 
 .flex, .flex-col { display: flex }
@@ -96,6 +100,7 @@ input[type=text], input[type=date] {
 
 .center-text { text-align: center }
 
+
 /*** INTERACE ***/
 
 .panel {
@@ -105,9 +110,10 @@ input[type=text], input[type=date] {
   padding: 2rem;
 }
 
+.panel > * { min-width: 15rem }
+
 /*** CREATE ***/
 
-.create > * { width: 15rem }
 .create > *:not(:last-child) { margin-bottom: 2rem }
 .create > * > * { margin-bottom: var(--small-margin) }
 .create input { min-width: 95% }
@@ -121,11 +127,6 @@ input[type=text], input[type=date] {
 .calendar > * > * { margin-bottom: var(--small-margin) }
 .calendar input { min-width: 95% }
 
-.calendar .column:not(:first-child) {
-  flex: 1 1;
-  min-width: 2.5rem;
-}
-
 .calendar .link {
   display: flex;
   padding: .5rem;
@@ -135,7 +136,6 @@ input[type=text], input[type=date] {
   justify-content: space-between;
   cursor: pointer;
 }
-
 
 .calendar .link .icon {
   height: .8rem;
@@ -147,12 +147,12 @@ input[type=text], input[type=date] {
 .grid {
   justify-content: center;
   user-select: none;
+  touch-action: none;
 }
 
 .grid span, .grid label {
   height: 1.2rem;
   user-select: none;
-  touch-action: none;
 }
 
 .grid .time {
@@ -169,6 +169,7 @@ input[type=text], input[type=date] {
   min-width: 2.7rem;
 }
 
+
 .grid .column span:first-child {
   box-shadow: var(--border-top), var(--border-sides);
 }
@@ -177,6 +178,17 @@ input[type=text], input[type=date] {
   box-shadow: var(--border-sides);
   cursor: pointer;
   /* transition: background .1s ease; */
+}
+
+
+
+.scroll-buttons {
+  justify-content: space-between;
+}
+
+.scroll-buttons button {
+  width: 4rem;
+  user-select: none;
 }
 
 

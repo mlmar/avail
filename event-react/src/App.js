@@ -1,4 +1,5 @@
 import './css/main.css';
+import './css/mobile.css';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 

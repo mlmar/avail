@@ -8,6 +8,8 @@ const COLORS = {
   PURPLE: (opacity) => `rgba(205, 173, 247, ${opacity || 1})`,
 }
 
+const PIXELS = 20; // number of pixels to horizontally scroll by
+
 /*
   Grid component
     - Cell table corresponding to dates and times
@@ -23,6 +25,10 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
 
   const [selected, setSelected] = useState({ max: 1 }); // placeholder counts for current selection
   const selectedRef = useRef([]);
+
+  const gridRef = useRef(null);
+
+  const [available, setAvailable] = useState({ amount: 0, users: []})
 
   // Finds the index of a specific {month/day} string in the dates array
   const findDateIndex = (date) => {
@@ -60,12 +66,10 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
   */
   const handleMouseMove = (event) => {
     let { nodeName, id } = event.target;
-    if(!anchor || !editing || nodeName !== "SPAN") return;
-    
+
     if(event.touches?.[0]) { // if touch screen
       event.preventDefault();
       const element = document.elementFromPoint(event.touches?.[0]?.clientX, event.touches?.[0]?.clientY); // get touched element
-      nodeName = element.nodeName;
       id = element.id;
       if(!id) { // if not in grid, simulate mouse leave
         handleMouseUp(event);
@@ -73,12 +77,18 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
       }
     }
     
-    // prevent rerendering within the same cell
-    if(id === posRef.current?.id || id === anchor.id) return;
-    
     const split = id.split("-");
     const date = split[0], time = parseInt(split[1]);
     const index = findDateIndex(date);
+    
+    setAvailable((prev) => ({ ...prev, amount: (counts[date]?.[time] || 0)}));
+    
+    if(!anchor || !editing || nodeName !== "SPAN") return;
+    
+    
+    // prevent rerendering within the same cell
+    if(id === posRef.current?.id || id === anchor.id) return;
+    
     
     posRef.current = { id, time, index };
     
@@ -104,7 +114,7 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
 
   // save/delete currently selected cells based on the anchor cell
   const handleMouseUp = (event) => {
-    event.preventDefault();
+    event?.preventDefault();
     if(!editing || !anchor) return;
     if(onSelect) {
       if(!posRef.current.id) { // if mouse never moved outside of anchor, perform the normal action
@@ -114,6 +124,13 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
       }
     }
     reset();
+  }
+
+  const handleScrollButton = (event) => {
+    let { nodeName, id } = event.target;
+    if(nodeName !== "BUTTON") return;
+    const distance = (id === "left-scroll") ? -PIXELS : PIXELS;
+    gridRef.current.scrollBy(distance, 0);
   }
 
   // get time column wih am/pm format
@@ -140,37 +157,46 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
         backgroundColor: COLORS.GREEN((counts[date]?.[i] / counts?.max)) 
       }) : null;
       
-      col.push(<span className="flex small date" style={selectedStyle || allStyle} id={date + "-" + i} key={date + "-" + i}> </span>)
+      col.push(<span className="flex small date cell" style={selectedStyle || allStyle} id={date + "-" + i} key={date + "-" + i}> </span>)
     }
     return col;
   }
 
   return (
-    <div className="flex grid">
-      <div className="flex-col">
-        {getTimes()}
-      </div>
-      <div className="flex-col">
-        <div className="flex"
-          onMouseDown={handleMouseDown} 
-          onMouseMove={handleMouseMove} 
-          onMouseUp={handleMouseUp} 
-          onMouseLeave={handleMouseUp}
+    <div className="flex-col">
+      <div className={"flex grid"} ref={gridRef}> 
+        <div className="flex-col">
+          {getTimes()}
+        </div>
+        <div className="flex-col">
+          <div className="flex"
+            onMouseDown={handleMouseDown} 
+            onMouseMove={handleMouseMove} 
+            onMouseUp={handleMouseUp} 
+            onMouseLeave={handleMouseUp}
 
-          onTouchStart={handleMouseDown}
-          onTouchMove={handleMouseMove}
-          onTouchEnd={handleMouseUp}
-        >
-          { dates?.map((date, i) => {
-            return (
-              <div className="flex-col column" key={date}>
-                <label className="date flex small"> {date} </label>
-                {getColumn(date)}
-              </div>
-            )
-          })}
+            onTouchStart={handleMouseDown}
+            onTouchMove={handleMouseMove}
+            onTouchEnd={handleMouseUp}
+          >
+            { dates?.map((date, i) => {
+              return (
+                <div className="flex-col column" key={date}>
+                  <label className="date flex small"> {date} </label>
+                  {getColumn(date)}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
+      
+      <div className="flex scroll-buttons mobile" onClick={handleScrollButton}>
+        <button className="medium" id="left-scroll"> &#8592; </button>
+        <button className="medium" id="right-scroll"> &#8594; </button>
+      </div>
+
+      <label className="small"> {available.amount} people available </label>
     </div>
   )
 }

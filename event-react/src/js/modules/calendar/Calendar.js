@@ -182,13 +182,15 @@ const Calendar = () => {
             <Grid dates={getDateStrings()} counts={counts}/>
           )
         }
+
+        <label className="small"> Darker colors mean more people are available. </label>
         
         
         { !signedIn &&
           <div className="flex-col">
             <label className="medium"> Your Name </label>
             <input type="text" value={user} onChange={handleUserChange} pattern="([A-z0-9À-ž\s]){2,}"/>
-            <button disabled={user.trim().length === 0} onClick={handleSignIn}> Sign In </button>
+            <button disabled={user.trim().length === 0} onClick={handleSignIn}> Sign In To Make Changes </button>
           </div>
         }
 
