@@ -75,7 +75,7 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
     const date = split[0], time = parseInt(split[1]);
     const index = findDateIndex(date);
     
-    setAvailable(counts[id]);
+    setAvailable(counts?.[id]);
     
     if(!anchor || !editing || nodeName !== "SPAN") return;
     
