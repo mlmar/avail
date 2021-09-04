@@ -84,7 +84,7 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
     
     posRef.current = { id, time, index };
     
-    const next = { max: 1}
+    const next = { max: 1 }
 
     // get (x, y) or (date, time) coordinates on the grid when selecting
     let startDate = Math.min(anchor.index, index);
@@ -113,7 +113,10 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
       if(!posRef.current.id) { // if mouse never moved outside of anchor, perform the normal action
         onSelect(anchor.id);
       } else { // otherwise do action specified by anchor to cell selected cells
-        Object.keys(selected).forEach((key) => onSelect(key, anchor.type));
+        Object.keys(selected).forEach((key) => {
+          if(key !== "max")
+          onSelect(key, anchor.type)
+        });
       }
     }
     resetSelection();
