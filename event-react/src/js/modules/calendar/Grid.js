@@ -166,7 +166,7 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
         <div className="flex-col">
           <div className="flex"
             onMouseDown={handleMouseDown} 
-            onMouseMove={handleMouseMove} 
+            onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp} 
             onMouseLeave={handleMouseUp}
 

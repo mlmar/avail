@@ -29,6 +29,11 @@ const Calendar = () => {
 
   const [toast, setToast] = useToast();
 
+  // replace bad but passable URLs
+  useEffect(() => {
+    window.history.replaceState(null, "Avail", HOME_URL + "/" + id);
+  }, [id])
+
   // arbitrarily calculates only current users availability to show during editing
   const calculateSelectedCounts = () => {
     const _counts = { max: 1 };
@@ -152,7 +157,8 @@ const Calendar = () => {
   if(!eventInfo) {
     return (
       <Panel className="calendar center-self flex-col">
-        <label className="large"> Event does not exist! </label>
+        <label className="center-text large bold "> Event does not exist </label>
+        <label className="center-text large"> Do you have the right link? </label>
       </Panel>
     )
   }
