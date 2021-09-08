@@ -17,7 +17,7 @@ export const useToast = () => {
     if(timerRef.current) clear();
 
     const timeoutFunc = () => setMessage(null);
-    timerRef.current = setTimeout(timeoutFunc, DEFAULT_DELAY);
+    // timerRef.current = setTimeout(timeoutFunc, DEFAULT_DELAY);
 
     return () => {
       if(timerRef.current) clear();
@@ -28,7 +28,7 @@ export const useToast = () => {
     if(!message) return;
     return (
       <Panel className={"toast small fade-in"} onClick={() => setMessage(null)}>
-        {message}
+        <p> {message} </p>
         <Icon type="close"/>
       </Panel>
     )

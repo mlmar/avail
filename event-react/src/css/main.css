@@ -110,7 +110,7 @@ input[type=text], input[type=date] {
   padding: 2rem;
 }
 
-.panel > * { min-width: 15rem }
+.create, .calendar > * { min-width: 15rem }
 
 /*** CREATE ***/
 
