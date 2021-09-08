@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { findEvent } from '../../service/EventsService.js';
 import { updateUser, findUsers, findUser, deleteUser } from '../../service/UsersService.js';
@@ -18,38 +18,12 @@ import Icon from '../ui/Icon.js';
 const Calendar = () => {
   const { id } = useParams();
 
+  // event info
   const [eventInfo, setEventInfo] = useState({ loading: true }); // event name and date
-  const [counts, setCounts] = useState(); // contains availability counts
-
-  const [user, setUser] = useState(""); // user name
-  const [selected, setSelected] = useState(new Set()); // current user's date availability
-
-  const [signedIn, setSignedIn] = useState(false);
-  const [editing, setEditing] = useState(false);
-
-  const [toast, setToast] = useToast();
-
-  // replace bad but passable URLs
-  useEffect(() => {
-    window.history.replaceState(null, "Avail", HOME_URL + "/" + id);
-  }, [id])
-
-  // arbitrarily calculates only current users availability to show during editing
-  const calculateSelectedCounts = () => {
-    const _counts = { max: 1 };
-    selected.forEach((dateID) => {
-      _counts[dateID] = { amount : 1, users: [] };
-    });
-    return _counts;
-  }
-
-  /*
-    calculates date availability based on all users from server
-  */
-  const calculateCounts = (countsArr) => {
-    let _counts = { max: countsArr.length };
-
-    countsArr.forEach((u) => {
+  const [users, setUsers] = useState(null);
+  const counts = useMemo(() => {
+    let _counts = { max: users?.length };
+    users?.forEach((u) => {
       u.selected?.forEach((dateID) => {
         if(!_counts[dateID]) _counts[dateID] = { amount: 0, users: []};
         _counts[dateID].amount = _counts[dateID].amount + 1;
@@ -57,8 +31,29 @@ const Calendar = () => {
       });
     });
     return _counts;
-  }
-  
+  }, [users]);
+
+  // user info
+  const [user, setUser] = useState(""); // user name
+  const [selected, setSelected] = useState(new Set()); // current user's date availability
+  const selectedCounts = useMemo(() => {
+    const _counts = { max: 1 };
+    selected.forEach((dateID) => {
+      _counts[dateID] = { amount : 1, users: [] };
+    });
+    return _counts;
+  }, [selected]);
+
+  // status
+  const [signedIn, setSignedIn] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [toast, setToast] = useToast();
+
+  // replace bad but passable URLs
+  useEffect(() => {
+    window.history.replaceState(null, "Avail", HOME_URL + "/" + id);
+  }, [id])
+
   // retreive event and user availability from server
   useEffect(() => {
     const fetchEvent = async() => {
@@ -70,8 +65,7 @@ const Calendar = () => {
 
     const fetchUsers = async () => {
       const usersResponse = await findUsers(id)
-      let _counts = calculateCounts(usersResponse?.data);
-      setCounts(_counts);
+      setUsers(usersResponse?.data);
     };
 
     fetchEvent();
@@ -131,18 +125,18 @@ const Calendar = () => {
     const selectedArray = Array.from(selected);
     const event = { id, user, selected: selectedArray };
 
+    
     if(selectedArray.length === 0) {
       await deleteUser(event)
     } else {
       await updateUser(event);
     }
-
+    
     const usersResponse = await findUsers(id)
-    let _counts = calculateCounts(usersResponse?.data, user);
-    setCounts(_counts);
+    setUsers(usersResponse?.data);
     setEditing(false);
   }
-
+  
   const handleCopy = () => {
     navigator?.clipboard?.writeText(HOME_URL + "/" + id);
     setToast("URL copied to clipboard. Share it with anyone you want.")
@@ -175,9 +169,8 @@ const Calendar = () => {
           <label className="small link" title="copy link to clipboard" onClick={handleCopy}> {id} <Icon type="clipboard"/> </label>
         </div>
 
-
         { editing ? (
-          <Grid dates={getDateStrings()} counts={calculateSelectedCounts()} onSelect={handleSelect} editing={editing}/>
+            <Grid dates={getDateStrings()} counts={selectedCounts} onSelect={handleSelect} editing={editing}/>
           ) : (
             <Grid dates={getDateStrings()} counts={counts}/>
           )
