@@ -196,19 +196,24 @@ const Grid = ({ dates, counts, onSelect, editing }) => {
         </div>
       }
 
-      { !editing &&
-        <div className="flex-col description">
-          <label className="small"> Darker colors mean more people are available. </label>
-          <label className="small"> Hover over a cell to see who's available. </label>
-          
-          { available?.amount ? (
-            <label className="small bold"> {available?.amount} {available?.amount === 1 ? "person" : "people"} available </label>
-          ) : (
-            <label className="small bold"> &nbsp; </label>
-          )}
+      { !editing ? (
+          <div className="flex-col description">
+            <label className="small"> Darker colors mean more people are available. </label>
+            <label className="small"> Hover over a cell to see who's available. </label>
+            
+            { available?.amount ? (
+              <label className="small bold"> {available?.amount} {available?.amount === 1 ? "person" : "people"} available </label>
+            ) : (
+              <label className="small bold"> &nbsp; </label>
+            )}
 
-          <label className="small bold"> {available?.users?.join(", ") || <> &nbsp; </>} </label>
-        </div>
+            <label className="small bold"> {available?.users?.join(", ") || <> &nbsp; </>} </label>
+          </div>
+        ) : (
+          <div className="flex-col description">
+            <p className="small"> Select/deselect by pressing and dragging. </p>
+          </div>
+        )
       }
     </div>
   )

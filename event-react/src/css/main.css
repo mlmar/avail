@@ -22,8 +22,9 @@
 
 html, body, #root, .app {
   display: flex;
-  height: 100%;
-  width: 100%;
+  flex: 1 1;
+  min-height: 100%;
+  min-width: 100%;
   flex-direction: column;
 }
 
@@ -102,6 +103,10 @@ input[type=text], input[type=date] {
 
 
 /*** INTERACE ***/
+
+.app {
+  padding: 1rem;
+}
 
 .panel {
   display: flex;
